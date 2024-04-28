@@ -1,10 +1,10 @@
 {
-  "name": "wrapped-naira-scroll",
-  "license": "UNLICENSED",
+  "name": "@wrapped-naira/afang",
+  "license": "MIT",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ wrapped-naira-scroll",
+    "deploy": "graph deploy --studio --ipfs https://ipfs.satsuma.xyz wrapped-naira-scroll",
     "create-local": "graph create --node http://localhost:8020/ wrapped-naira-scroll",
     "remove-local": "graph remove --node http://localhost:8020/ wrapped-naira-scroll",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 wrapped-naira-scroll",

@@ -1,86 +1,27 @@
-import {
-  Approval as ApprovalEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
-  Paused as PausedEvent,
-  Transfer as TransferEvent,
-  Unpaused as UnpausedEvent
-} from "../generated/Wngn/Wngn"
-import {
-  Approval,
-  OwnershipTransferred,
-  Paused,
-  Transfer,
-  Unpaused
-} from "../generated/schema"
-
-export function handleApproval(event: ApprovalEvent): void {
-  let entity = new Approval(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.spender = event.params.spender
-  entity.value = event.params.value
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handlePaused(event: PausedEvent): void {
-  let entity = new Paused(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
+import { Transfer as TransferEvent } from "../generated/Wngn/Wngn"
+import { Deposit, Withdrawal } from "../generated/schema"
 
 export function handleTransfer(event: TransferEvent): void {
-  let entity = new Transfer(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.from = event.params.from
-  entity.to = event.params.to
-  entity.value = event.params.value
+  const nullAddress = '0x0000000000000000000000000000000000000000';
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleUnpaused(event: UnpausedEvent): void {
-  let entity = new Unpaused(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  // Handle deposit
+  if (event.params.from.toHexString() === nullAddress) {
+    let depositId = event.transaction.hash.concatI32(event.logIndex.toI32());
+    let deposit = new Deposit(depositId);
+    deposit.to = event.params.to;
+    deposit.value = event.params.value;
+    deposit.blockNumber = event.block.number;
+    deposit.blockTimestamp = event.block.timestamp;
+    deposit.transactionHash = event.transaction.hash;
+    deposit.save();
+  } else if (event.params.to.toHexString() === nullAddress) {     // Handle withdrawal
+    let withdrawalId = event.transaction.hash.concatI32(event.logIndex.toI32());
+    let withdrawal = new Withdrawal(withdrawalId);
+    withdrawal.from = event.params.from;
+    withdrawal.value = event.params.value;
+    withdrawal.blockNumber = event.block.number;
+    withdrawal.blockTimestamp = event.block.timestamp;
+    withdrawal.transactionHash = event.transaction.hash;
+    withdrawal.save();
+  }
 }

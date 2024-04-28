@@ -3,6 +3,9 @@
     "Wngn": {
       "address": "0xAF97c3478ABF6EEAc933d3383B71668F314400aA",
       "startBlock": 4117692
+    },
+    "P2PExchange": {
+      "address": "0x3e3FF6bD166ACA5837E3dF8419991b3905c28fA2"
     }
   }
 }
